@@ -31,13 +31,31 @@ Also activate when the user asks for:
 
 When generating the PRD, collect and prioritize context in this order:
 
-1. Currently opened files in the editor
-2. User-selected code snippets
-3. `README.md` in the current project
-4. API documentation (if present)
-5. User-provided text requirements
+1. `docs/en/requirements.md` (if present)
+2. Currently opened files in the editor
+3. User-selected code snippets
+4. `README.md` in the current project
+5. API documentation (if present)
+6. User-provided text requirements
 
 Do not assume any specific repository layout.
+
+## Canonical Docs Paths
+
+Default output targets (English):
+
+- Requirements/PRD: `docs/en/requirements.md`
+- Design/Spec: `docs/en/design.md`
+- Tasks: `docs/en/tasks.md`
+
+If `docs/en/requirements.md` does not exist, scan for legacy filenames
+(best-effort) and treat them as input sources:
+
+- `requirements.md`
+- `PRD.md`
+
+Always write the final PRD to the canonical path unless the user explicitly
+requests a different location.
 
 ## Interaction Workflow
 
@@ -48,6 +66,22 @@ Classify input into one of three modes:
 - **Mode A: Vague idea** (high-level concept, unclear scope)
 - **Mode B: Existing code** (selected code, files, or implementation references)
 - **Mode C: Empty or minimal project context** (insufficient artifacts)
+
+### Step 1.5: Scan for Existing PRD (Delta vs Full)
+
+Before drafting, scan the workspace for an existing PRD file.
+
+Canonical path:
+
+- `docs/en/requirements.md`
+
+Legacy paths (best-effort):
+
+- `requirements.md`
+- `PRD.md`
+
+If an existing PRD is found, use **Incremental Update (Delta Analysis)**.
+If no existing PRD is found, use **Full Generation**.
 
 ### Step 2: Clarify If Needed
 
@@ -108,6 +142,29 @@ To draft a high-quality PRD, please help confirm:
 
 Write with professional, concise, and logically rigorous product language.
 Prefer implementation-neutral requirements unless technical constraints are confirmed.
+
+## Incremental Update Logic (Delta Analysis)
+
+When an existing PRD is present:
+
+- **Analyze** the new request and identify deltas against the current PRD:
+  - New user stories or personas
+  - New capabilities or scope changes
+  - New exception/failure expectations
+  - Changes to acceptance criteria
+  - New constraints/risks/dependencies
+- **Merge** deltas into the appropriate existing sections:
+  - Insert where it naturally belongs (do not append a duplicate PRD).
+  - Do not rewrite unrelated content.
+- **Tag**:
+  - For new bullets or new numbered items, prefix with `[NEW]`.
+  - For clarity, keep the original item IDs stable (e.g., keep `FR-3`
+    unchanged; append new requirements as new IDs).
+- **Consistency check**:
+  - Call out conflicts with existing scope or acceptance criteria.
+  - If the change implies a breaking behavior for users/stakeholders,
+    flag it explicitly as a product-level breaking change and list what
+    must be updated in PRD (scope + AC), without proposing implementation.
 
 ## Output Requirements
 
