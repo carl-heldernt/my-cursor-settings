@@ -36,6 +36,31 @@ Typical usage:
 3. **Tasks**: run `/create-tasks` to create or append to `docs/en/tasks.md`.
 4. **Implement**: pick tasks and implement; keep docs and code in sync.
 
+## Workflow diagram example
+
+```mermaid
+graph TD
+    Start((UserIdeaOrNewFeature)) --> PRD[/create-prd/]
+    PRD --> REQ[requirements.md]
+
+    REQ --> SPEC[/create-spec-doc/]
+    SPEC --> DESIGN[design.md]
+
+    DESIGN --> TASKS[/create-tasks/]
+    TASKS --> TASK_LIST[tasks.md]
+
+    TASK_LIST --> CODE{AIAgentOrDeveloper}
+    CODE --> IMPLEMENT[ImplementationOrCode]
+
+    IMPLEMENT -.->|NewChangesOrFeedback| PRD
+
+    subgraph docsPhase [DocumentationPhase]
+        REQ
+        DESIGN
+        TASK_LIST
+    end
+```
+
 ## PRD vs Spec boundary (authoritative)
 
 We enforce a strict boundary between product requirements (what/why) and
@@ -127,6 +152,24 @@ Translation rules:
 - Preserve IDs and tags exactly (`FR-*`, `EX-*`, `AC-*`, `T-*`, `[NEW]`,
   `[MODIFIED]`).
 - Do not translate inline code/backticks or code fences.
+
+## Project maintenance guideline
+
+### Golden rule: update docs before code
+
+In this SDD workflow, avoid "code first, docs later." That pattern quickly
+breaks AI-assisted consistency and traceability.
+
+When adding or changing a feature, keep this order:
+
+1. Run `/create-prd` to confirm product logic and acceptance boundaries.
+2. Run `/create-spec-doc` to confirm the technical implementation path.
+3. Run `/create-tasks` to confirm execution steps and scope.
+4. Only then ask AI agents/developers to implement based on new tasks.
+
+By following this sequence, `requirements.md` and `design.md` remain living
+system history documents that help new engineers (and future AI sessions)
+understand the system quickly.
 
 ## Repo structure
 

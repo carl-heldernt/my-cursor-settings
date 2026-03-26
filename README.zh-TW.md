@@ -34,6 +34,31 @@
 3. **Tasks**：執行 `/create-tasks` 建立或追加到 `docs/en/tasks.md`
 4. **Implement**：依 tasks 實作，並保持文件與程式碼同步
 
+## 工作流程圖例示範
+
+```mermaid
+graph TD
+    Start((UserIdeaOrNewFeature)) --> PRD[/create-prd/]
+    PRD --> REQ[requirements.md]
+
+    REQ --> SPEC[/create-spec-doc/]
+    SPEC --> DESIGN[design.md]
+
+    DESIGN --> TASKS[/create-tasks/]
+    TASKS --> TASK_LIST[tasks.md]
+
+    TASK_LIST --> CODE{AIAgentOrDeveloper}
+    CODE --> IMPLEMENT[ImplementationOrCode]
+
+    IMPLEMENT -.->|NewChangesOrFeedback| PRD
+
+    subgraph docsPhase [DocumentationPhase]
+        REQ
+        DESIGN
+        TASK_LIST
+    end
+```
+
 ## PRD vs Spec 邊界（權威規範）
 
 我們嚴格區分產品需求（what/why）與技術規格（how）。
@@ -121,6 +146,23 @@
 - 必須完整保留 IDs 與 tags（`FR-*`, `EX-*`, `AC-*`, `T-*`, `[NEW]`,
   `[MODIFIED]`）。
 - 不翻譯 inline code（反引號）與 code fences。
+
+## 專案維護指引
+
+### 黃金律：先修文件，再改程式碼
+
+在這套 SDD 工作流中，最應避免的是「先改 code、再補文件」。
+這樣很容易破壞 AI 協作的一致性與可追蹤性。
+
+新增或調整功能時，請固定遵守以下順序：
+
+1. 執行 `/create-prd`，先確認產品邏輯與驗收邊界。
+2. 執行 `/create-spec-doc`，確認技術實作路徑。
+3. 執行 `/create-tasks`，確認執行步驟與範圍。
+4. 最後才依新增任務請 AI agent／工程師進行實作。
+
+維持這個順序後，`requirements.md` 與 `design.md` 才會持續是活的系統歷史，
+讓新進工程師（或未來的 AI）能快速掌握專案全貌。
 
 ## Repo 結構
 
